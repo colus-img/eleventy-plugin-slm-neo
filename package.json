@@ -1,0 +1,30 @@
+{
+	"name": "eleventy-plugin-slm-neo",
+	"version": "0.0.1",
+	"description": "Slm-neo template language plugin for Eleventy",
+	"keywords": [
+		"eleventy",
+		"eleventy-plugin",
+		"plugin",
+		"slm",
+		"slm-neo",
+		"html",
+		"template",
+		"ssg",
+		"static-site-generator"
+	],
+	"exports": "./index.js",
+	"type": "module",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/colus-img/eleventy-plugin-slm-neo.git"
+	},
+	"author": "colus-img",
+	"license": "MIT",
+	"engines": {
+		"node": ">=18"
+	},
+	"dependencies": {
+		"slm-neo": "colus-img/slm-neo"
+	}
+}

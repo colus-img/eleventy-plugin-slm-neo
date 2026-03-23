@@ -1,0 +1,118 @@
+# eleventy-plugin-slm-neo
+
+An [Eleventy](https://github.com/11ty/eleventy) plugin to use [Slm-neo template language](https://github.com/colus-img/slm-neo).
+Slm-neo is a JS port of the Ruby [Slim](http://slim-lang.com/) for HTML.
+
+## Features
+
+- **Slm Syntax**: Write templates in Slm, a concise syntax similar to Slim.
+- **Async Support**: Slm-neo natively supports async filters, shortcodes and paired shortcodes.
+
+## Installation
+
+Install it directly from GitHub:
+
+```bash
+npm i -D colus-img/eleventy-plugin-slm-neo
+```
+
+## Usage
+
+Add the plugin in your Eleventy configuration file (usually eleventy.config.mjs or eleventy.config.js):
+
+```javascript
+import slmPlugin from "eleventy-plugin-slm-neo";
+
+export default function(eleventyConfig) {
+
+	eleventyConfig.addPlugin(slmPlugin);
+
+};
+```
+
+## Accessing Data in Slm Templates
+
+Eleventy data (front matter, global data, etc.) is available via `this`.
+
+```slim
+h1 = this.title
+p = this.page.date
+ul
+	- for item of this.items
+		li = item.name
+```
+
+## Filters and Shortcodes
+
+Eleventy filters and shortcodes are available via `this.filters`.
+In Slm, both filters and shortcodes function as JavaScript functions, so they are used in the same way.
+Asynchronous filters and shortcodes must be called with `await` just like regular JavaScript functions.
+
+```slim
+a href="${this.filters.url('/my-page')}"
+	div = this.filters.myCustomFilter('value')
+	div = this.filters.myCustomShortcode('value1', 'value2')
+	div = await this.filters.myAsyncFilter('value')
+```
+
+## Layouts and Partials
+
+### Layouts
+Use Eleventy's standard layout feature. Specify the layout file in the front matter or elsewhere.
+In layout file, the content of the original page is passed as data and can be accessed via `this.content`.
+
+### Partials
+Use Slm's `partial` function to include other files.
+- **Relative Path**: Resolves relative to the current file's directory.
+- **Root-Relative Path** (starting with `/`): Resolves relative to your Eleventy Includes directory (e.g., `src/_includes/`).
+
+### Example
+
+**page.slm**
+```slim
+---
+layout: "layout.slm"
+---
+p This is content
+
+/ Include ./subcontent.slm
+== partial('subcontent.slm')
+```
+
+**layout.slm** (located in `src/_includes/`)
+```slim
+#header
+	/ Include src/_includes/lib/header.slm
+	== partial('/lib/header')
+
+#main
+	/ Output original page content
+	== this.content
+```
+
+## Slm-neo API Options
+
+Options passed directly to the 3rd argument of Slm-neo engine's `renderAsync` method.
+About Slm-neo API Options, see [slm-neo](https://github.com/colus-img/slm-neo/) for details.
+
+- Type: `Object`
+	- Example: `{ someOption: true }`
+
+### Options Example
+```javascript
+import slmPlugin from "eleventy-plugin-slm-neo";
+
+export default function(eleventyConfig) {
+
+	eleventyConfig.addPlugin(slmPlugin, {
+		// Slm-neo options
+		someOption: true,
+		// ...other slm-neo options
+	});
+
+};
+```
+
+## License
+
+MIT
