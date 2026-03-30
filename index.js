@@ -4,10 +4,29 @@ export default function EleventyPluginSlm(eleventyConfig, slmOptions = {}) {
 
 	eleventyConfig.addTemplateFormats(['slm', 'slim']);
 
+	const originalPairedShortcodes = eleventyConfig.getPairedShortcodes() || {};
+	const wrappedPairedShortcodes = {};
+
+	for (const [name, func] of Object.entries(originalPairedShortcodes)) {
+		wrappedPairedShortcodes[name] = function(...args) {
+			const cb = args[args.length - 1];
+			let content = "";
+			
+			// Slm passes a callback function as the last argument for indented blocks
+			if (typeof cb === 'function') {
+				content = cb();
+				args.pop();
+			}
+
+			// Eleventy paired shortcodes expect (content, ...args)
+			return func(content, ...args);
+		};
+	}
+
 	const allFilters = {
 		...(eleventyConfig.getFilters() || {}),
 		...(eleventyConfig.getShortcodes() || {}),
-		...(eleventyConfig.getPairedShortcodes() || {}),
+		...wrappedPairedShortcodes,
 	};
 
 	const compilerOptions = {
