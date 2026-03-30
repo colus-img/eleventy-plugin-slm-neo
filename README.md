@@ -45,8 +45,8 @@ ul
 ## Filters and Shortcodes
 
 Eleventy filters and shortcodes are also destructured and can be called directly as JavaScript functions. 
-A clean pipeline syntax (`|`) is supported within string interpolations.
-Asynchronous filters and shortcodes must be called with `await` just like regular JavaScript functions.
+A clean pipeline syntax (`|`) is supported within string interpolations and **automatically handles asynchronous functions**.
+Asynchronous filters and shortcodes must be called with `await` only when used in standard JavaScript function style outside of pipelines.
 
 ```slim
 a href="${url('/my-page')}"
@@ -54,6 +54,8 @@ a href="${url('/my-page')}"
 	div = myCustomShortcode('value1', 'value2')
 	div = await myAsyncFilter('value')
 	div Hello ${name | upper}
+	/ Async works automatically in pipelines!
+	div ${ postId | getPostTitle | upper }
 ```
 
 ## Paired Shortcodes (Block Syntax)
