@@ -32,34 +32,47 @@ export default function(eleventyConfig) {
 
 ## テンプレート内でのデータ参照
 
-Eleventyのデータ（フロントマター、グローバルデータなど）は`this`を介して利用可能です。
+最新の `slm-neo` の自動分割代入（Destructuring）機能により、Eleventyのデータ（フロントマター、グローバルデータなど）は `this.` というプレフィックスを付けずに直接記述・参照できるようになりました。（従来の `this.xxx` 記法も引き続き動作します）
 
 ```slim
-h1 = this.title
-p = this.page.date
+h1 = title
+p = page.date
 ul
-	- for item of this.items
+	- for item of items
 		li = item.name
 ```
 
 ## フィルターとショートコード
 
-Eleventy のフィルターやショートコードは`this.filters`から利用できます。
-Slmではフィルターもショートコードもjavascriptの関数として機能するため、使い方は同じです。
-非同期フィルターや非同期ショートコードは通常のjavascript関数と同様に、awaitを付けて呼び出す必要があります。
+Eleventyのフィルターやショートコードも、直下のJavaScript関数として直接呼び出すことができます。
+また、文字列補間（`${...}`）内では、直感的なパイプライン記法（`|`）が利用可能です。
+非同期関数は通常のJavaScript関数と同様に、`await`を付けて呼び出します。
 
 ```slim
-a href="${this.filters.url('/my-page')}"
-	div = this.filters.myCustomFilter('value')
-	div = this.filters.myCustomShortcode('value1', 'value2')
-	div = await this.filters.myAsyncFilter('value')
+a href="${url('/my-page')}"
+	div = myCustomFilter('value')
+	div = myCustomShortcode('value1', 'value2')
+	div = await myAsyncFilter('value')
+	div Hello ${name | upper}
+```
+
+## Paired Shortcode (ブロック構文) の利用
+
+Eleventyのペアショートコード（Paired Shortcode）は、Slmのインデントブロック構文を使ってそのまま直感的に呼び出すことができます。
+インデントとして書かれた中身はプラグインによって自動的に評価され、HTML文字列としてショートコード機能の第1引数（`content`）に渡されます。
+**注意**: ショートコード関数が全容として返すHTMLタグを画面に正しく描画するため、必ずエスケープなしの出力記号 `==` を使用してください。
+
+```slim
+== myPairedShortcode('arg1', 'arg2')
+	p このブロック内部のHTMLが第一引数に渡されます。
+	div もちろん補完（ ${title | upper} ）なども使えます！
 ```
 
 ## レイアウトとパーシャル
 
 ### レイアウト
 Eleventyの標準的なレイアウト機能を使用します。フロントマターなどでレイアウトファイルを指定してください。
-レイアウトファイルでは、元ページのコンテンツはデータとして渡されるので、`this.content`でアクセスできます。
+レイアウトファイルでは、元ページのコンテンツはデータとして渡されるので、`content`でアクセスできます。
 
 ### パーシャル
 Slmの`partial`関数を使用して他のファイルをインクルードできます。
@@ -88,7 +101,7 @@ p This is content
 
 #main
 	/ 元ページの内容を出力
-	== this.content
+	== content
 ```
 
 ## Slm-neoのAPIオプション

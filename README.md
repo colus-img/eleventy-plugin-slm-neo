@@ -32,34 +32,46 @@ export default function(eleventyConfig) {
 
 ## Accessing Data in Slm Templates
 
-Eleventy data (front matter, global data, etc.) is available via `this`.
+Eleventy data (front matter, global data, etc.) is automatically destructured and available directly. The previous `this.` prefix is no longer required.
 
 ```slim
-h1 = this.title
-p = this.page.date
+h1 = title
+p = page.date
 ul
-	- for item of this.items
+	- for item of items
 		li = item.name
 ```
 
 ## Filters and Shortcodes
 
-Eleventy filters and shortcodes are available via `this.filters`.
-In Slm, both filters and shortcodes function as JavaScript functions, so they are used in the same way.
+Eleventy filters and shortcodes are also destructured and can be called directly as JavaScript functions. 
+A clean pipeline syntax (`|`) is supported within string interpolations.
 Asynchronous filters and shortcodes must be called with `await` just like regular JavaScript functions.
 
 ```slim
-a href="${this.filters.url('/my-page')}"
-	div = this.filters.myCustomFilter('value')
-	div = this.filters.myCustomShortcode('value1', 'value2')
-	div = await this.filters.myAsyncFilter('value')
+a href="${url('/my-page')}"
+	div = myCustomFilter('value')
+	div = myCustomShortcode('value1', 'value2')
+	div = await myAsyncFilter('value')
+	div Hello ${name | upper}
+```
+
+## Paired Shortcodes (Block Syntax)
+
+Eleventy's Paired Shortcodes can be called natively using Slm's block syntax. The plugin automatically evaluates the indented block and injects its rendered HTML as the first argument (`content`) to your Paired Shortcode.
+**Note**: Use the unescaped output `==` to render the returned HTML properly.
+
+```slim
+== myPairedShortcode('arg1', 'arg2')
+	p This block is passed as the first argument.
+	div It can contain interpolations too: ${title | upper}
 ```
 
 ## Layouts and Partials
 
 ### Layouts
 Use Eleventy's standard layout feature. Specify the layout file in the front matter or elsewhere.
-In layout file, the content of the original page is passed as data and can be accessed via `this.content`.
+In layout file, the content of the original page is passed as data and can be accessed via `content`.
 
 ### Partials
 Use Slm's `partial` function to include other files.
@@ -87,7 +99,7 @@ p This is content
 
 #main
 	/ Output original page content
-	== this.content
+	== content
 ```
 
 ## Slm-neo API Options
