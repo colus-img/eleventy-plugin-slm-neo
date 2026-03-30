@@ -13,6 +13,9 @@
 		"ssg",
 		"static-site-generator"
 	],
+	"scripts": {
+		"test": "node test.js"
+	},
 	"exports": "./index.js",
 	"type": "module",
 	"repository": {

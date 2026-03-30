@@ -14,7 +14,7 @@ export default function EleventyPluginSlm(eleventyConfig, slmOptions = {}) {
 			
 			// Slm passes a callback function as the last argument for indented blocks
 			if (typeof cb === 'function') {
-				content = cb();
+				content = cb.call(this);
 				args.pop();
 			}
 
