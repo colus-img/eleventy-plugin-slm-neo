@@ -1,3 +1,4 @@
+import slm from 'slm-neo';
 import { compile as slmCompile } from './extension.js';
 
 export default function EleventyPluginSlm(eleventyConfig, slmOptions = {}) {
@@ -10,16 +11,20 @@ export default function EleventyPluginSlm(eleventyConfig, slmOptions = {}) {
 	for (const [name, func] of Object.entries(originalPairedShortcodes)) {
 		wrappedPairedShortcodes[name] = function(...args) {
 			const cb = args[args.length - 1];
-			let content = "";
 			
-			// Slm passes a callback function as the last argument for indented blocks
+			// Slm passes a callback function as the last argument for indented blocks.
+			// If the last argument is a function, we assume it's a Slm block call.
 			if (typeof cb === 'function') {
-				content = cb.call(this);
-				args.pop();
+				return slm.yieldBlock(this, cb, async (content) => {
+					// (content, ...remaining_args)
+					return slm.safe(await func.apply(this, [content, ...args.slice(0, -1)]));
+				});
 			}
 
-			// Eleventy paired shortcodes expect (content, ...args)
-			return func(content, ...args);
+			// If not a function, it's a traditional JS-style call: (content, ...args)
+			// These are already in the correct order in args.
+			const result = func.apply(this, args);
+			return (result instanceof Promise) ? result.then(v => slm.safe(v)) : slm.safe(result);
 		};
 	}
 
@@ -34,8 +39,13 @@ export default function EleventyPluginSlm(eleventyConfig, slmOptions = {}) {
 		pathPrefix: eleventyConfig.pathPrefix,
 	};
 
+	const slmOpts = {
+		helpersName: 'filters',
+		...slmOptions
+	};
+
 	eleventyConfig.addExtension(['slm', 'slim'], {
 		outputFileExtension: 'html',
-		compile: slmCompile(compilerOptions, slmOptions)
+		compile: slmCompile(compilerOptions, slmOpts)
 	});
 }

@@ -24,6 +24,7 @@ export function compile(compileOptions, slmOptions) {
 			const renderOptions = {
 				filename: inputPath,
 				basePath: data.eleventy.directories.includes,
+				format: "html",
 				...slmOptions
 			};
 			try {
@@ -31,7 +32,7 @@ export function compile(compileOptions, slmOptions) {
 				return html;
 			} catch (e) {
 				console.error(`Error rendering ${inputPath}:`, e);
-				return Promise.reject(e);
+				throw e;
 			}
 		};
 	}

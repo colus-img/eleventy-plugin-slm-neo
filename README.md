@@ -44,36 +44,43 @@ ul
 
 ## Filters and Shortcodes
 
-Eleventy filters and shortcodes are also destructured and can be called directly as JavaScript functions. 
-A clean pipeline syntax (`|`) is supported within string interpolations and **automatically handles asynchronous functions**.
-Asynchronous filters and shortcodes must be called with `await` only when used in standard JavaScript function style outside of pipelines.
+Eleventy Filters and Shortcodes can utilize an intuitive pipeline syntax (`${...|...}`). This **pipeline syntax automatically supports asynchronous functions**, so there is no need to explicitly write `await`.
+Additionally, they can also be called as regular JavaScript functions. In this case too, `this.filters` is not required. When calling asynchronous functions as JavaScript functions, `await` is necessary.
 
 ```slim
 a href="${url('/my-page')}"
 	div = myCustomFilter('value')
 	div = myCustomShortcode('value1', 'value2')
 	div = await myAsyncFilter('value')
-	div Hello ${name | upper}
+	div Hello ${ name | upper }
+	div ${ 'value1', 'value2' | myCustomShortcode }
 	/ Async works automatically in pipelines!
-	div ${ postId | getPostTitle | upper }
+	div ${ postId | myAsyncFilter | upper }
 ```
 
-## Paired Shortcodes (Block Syntax)
+## Paired Shortcodes
 
 Eleventy's Paired Shortcodes can be called natively using Slm's block syntax. The plugin automatically evaluates the indented block and injects its rendered HTML as the first argument (`content`) to your Paired Shortcode.
 **Note**: Use the unescaped output `==` to render the returned HTML properly.
 
 ```slim
+div ${= 'arg1', 'arg2' | myPairedShortcode }
+	p This block is passed as the first argument.
+
+== "${ 'arg1', 'arg2' | myPairedShortcode }"
+	p This block is passed as the first argument.
+
 == myPairedShortcode('arg1', 'arg2')
 	p This block is passed as the first argument.
 	div It can contain interpolations too: ${title | upper}
+
 ```
 
 ## Layouts and Partials
 
 ### Layouts
 Use Eleventy's standard layout feature. Specify the layout file in the front matter or elsewhere.
-In layout file, the content of the original page is passed as data and can be accessed via `content`.
+In layout file, the content of the original page can be accessed via `content()`.
 
 ### Partials
 Use Slm's `partial` function to include other files.
@@ -101,12 +108,12 @@ p This is content
 
 #main
 	/ Output original page content
-	== content
+	== content()
 ```
 
 ## Slm-neo API Options
 
-Options passed directly to the 3rd argument of Slm-neo engine's `renderAsync` method.
+Options passed directly to the Slm-neo engine's `renderAsync` method.
 About Slm-neo API Options, see [slm-neo](https://github.com/colus-img/slm-neo/) for details.
 
 - Type: `Object`

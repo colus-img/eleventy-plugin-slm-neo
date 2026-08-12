@@ -14,7 +14,7 @@
 		"static-site-generator"
 	],
 	"scripts": {
-		"test": "node test.js"
+		"test": "node __tests__/test.js"
 	},
 	"exports": "./index.js",
 	"type": "module",

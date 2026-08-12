@@ -32,7 +32,7 @@ export default function(eleventyConfig) {
 
 ## テンプレート内でのデータ参照
 
-最新の`slm-neo`の自動分割代入（Destructuring）機能により、Eleventyのデータ（フロントマター、グローバルデータなど）は`this.`というプレフィックスを付けずに直接記述・参照できるようになりました。（従来の`this.xxx`記法も引き続き動作します）
+最新の`slm-neo`の自動分割代入機能により、Eleventyが提供するデータ（フロントマター、グローバルデータなど）は`this.`というプレフィックスを付けずに直接記述・参照できるようになりました。（従来の`this.xxx`記法も引き続き動作します）
 
 ```slim
 h1 = title
@@ -42,38 +42,39 @@ ul
 		li = item.name
 ```
 
-## フィルターとショートコード
+## FiltersとShortcodes
 
-Eleventyのフィルターやショートコードも、直下のJavaScript関数として直接呼び出すことができます。
-また、文字列補間（`${...}`）内では、直感的なパイプライン記法（`|`）が利用可能です。この**パイプライン記法では非同期関数が自動的にサポートされる**ため、明示的に `await` を書く必要はありません。
-（通常の関数呼び出し形式で非同期関数を使う場合は、引き続き `await` が必要です）
+EleventyのFiltersやShortcodesは、slmの直感的なパイプライン記法（`${...|...}`）で利用可能です。この**パイプライン記法では非同期関数が自動的にサポートされる**ため、明示的に`await`を書く必要はありません。
+また、通常のJavaScript関数として使うこともできます。この場合も関数名に、`this.helpers.`などは不要です。`=`や`==`の直後で非同期関数を使う場合は、`await`が不要です。
+どちらの記法でも、非同期関数を関数の引数として使う場合は、明示的に`await`を書く必要があります。
 
 ```slim
 a href="${url('/my-page')}"
 	div = myCustomFilter('value')
 	div = myCustomShortcode('value1', 'value2')
-	div = await myAsyncFilter('value')
-	/ パイプライン内なら非同期関数も await なしでOK！
-	div Hello ${postId | getPostTitle | upper}
+	div = myAsyncFilter('value')
+	div Hello ${name | upper}
+	div ${'value1', 'value2' | myCustomShortcode}
+	div Hello ${postId | myAsyncFilter | upper}
 ```
 
-## Paired Shortcode(ブロック構文)の利用
+## Paired Shortcode
 
-Eleventyのペアショートコード（Paired Shortcode）は、Slmのインデントブロック構文を使ってそのまま直感的に呼び出すことができます。
+EleventyのPaired Shortcodeは、Slmのインデントブロック構文を使って直感的に呼び出すことができます。
 インデントとして書かれた中身はプラグインによって自動的に評価され、HTML文字列としてショートコード機能の第1引数（`content`）に渡されます。
-**注意**: ショートコード関数が全容として返すHTMLタグを画面に正しく描画するため、必ずエスケープなしの出力記号`==`を使用してください。
 
 ```slim
-== myPairedShortcode('arg1', 'arg2')
+= myPairedShortcode('arg1', 'arg2')
 	p このブロック内部のHTMLが第一引数に渡されます。
-	div もちろん補完（${title | upper}）なども使えます！
+	.feature
+		div ${title | upper}のようにここでフィルターを使うこともできます！
 ```
 
 ## レイアウトとパーシャル
 
 ### レイアウト
 Eleventyの標準的なレイアウト機能を使用します。フロントマターなどでレイアウトファイルを指定してください。
-レイアウトファイルでは、元ページのコンテンツはデータとして渡されるので、`content`でアクセスできます。
+レイアウトファイルでは、元ページのコンテンツは`content()`でアクセスできます。
 
 ### パーシャル
 Slmの`partial`関数を使用して他のファイルをインクルードできます。
@@ -102,12 +103,12 @@ p This is content
 
 #main
 	/ 元ページの内容を出力
-	== content
+	== content()
 ```
 
 ## Slm-neoのAPIオプション
 
-Slm-neoエンジンの`renderAsync`メソッドの第3引数に直接渡されるオプションオブジェクトです。
+Slm-neoエンジンの`renderAsync`メソッドに渡されるオプションオブジェクトです。
 オプションの詳細は[slm-neo](https://github.com/colus-img/slm-neo/)を参照してください。
 
 - 型: `Object`
