@@ -1,19 +1,25 @@
 # eleventy-plugin-slm-neo
 
-Eleventyで[Slm-neoテンプレートエンジン](https://github.com/colus-img/slm-neo)を使用するためのプラグインです。
-SlmはHTML用のRuby [Slim](http://slim-lang.com/)のJS移植版です。
+Eleventyで[slm-neoテンプレート言語](https://github.com/colus-img/slm-neo)を使用するためのプラグインです。
+slm-neoはRuby [Slim](http://slim-lang.com/)のJS移植版です。
 
 ## 機能
 
-- **Slm構文**: Slimに似た簡潔なSlm構文でテンプレートを記述できます。
-- **非同期対応**: Slm-neoはネイティブで非同期フィルター、ショートコード、ペアショートコードをサポートしています。
+- **slm構文**: Slimに似た簡潔なslm構文でテンプレートを記述できます。
+- **非同期対応**: slm-neoはネイティブで非同期フィルター、ショートコード、ペアショートコードをサポートしています。
 
 ## インストール
 
 GitHubから直接インストールしてください:
 
+npm:
 ```bash
 npm i -D colus-img/eleventy-plugin-slm-neo
+```
+
+pnpm:
+```bash:pnpm
+pnpm add -D github:colus-img/eleventy-plugin-slm-neo
 ```
 
 ## 使い方
@@ -44,7 +50,7 @@ ul
 
 ## FiltersとShortcodes
 
-EleventyのFiltersやShortcodesは、slmの直感的なパイプライン記法（`${...|...}`）で利用可能です。この**パイプライン記法では非同期関数が自動的にサポートされる**ため、明示的に`await`を書く必要はありません。
+EleventyのFiltersやShortcodesは、slm-neoの直感的なパイプライン記法（`${...|...}`）で利用可能です。この**パイプライン記法では非同期関数が自動的にサポートされる**ため、明示的に`await`を書く必要はありません。
 また、通常のJavaScript関数として使うこともできます。この場合も関数名に、`this.helpers.`などは不要です。`=`や`==`の直後で非同期関数を使う場合は、`await`が不要です。
 どちらの記法でも、非同期関数を関数の引数として使う場合は、明示的に`await`を書く必要があります。
 
@@ -60,7 +66,7 @@ a href="${url('/my-page')}"
 
 ## Paired Shortcode
 
-EleventyのPaired Shortcodeは、Slmのインデントブロック構文を使って直感的に呼び出すことができます。
+EleventyのPaired Shortcodeは、slm-neoのインデントブロック構文を使って直感的に呼び出すことができます。
 インデントとして書かれた中身はプラグインによって自動的に評価され、HTML文字列としてショートコード機能の第1引数（`content`）に渡されます。
 
 ```slim
@@ -77,7 +83,7 @@ Eleventyの標準的なレイアウト機能を使用します。フロントマ
 レイアウトファイルでは、元ページのコンテンツは`content()`でアクセスできます。
 
 ### パーシャル
-Slmの`partial`関数を使用して他のファイルをインクルードできます。
+slm-neoの`partial`関数を使用して他のファイルをインクルードできます。
 
 - **相対パス**: 現在のファイルのディレクトリからの相対パスとして解決されます。
 - **ルート相対パス** (`/`で始まるパス): EleventyのIncludesディレクトリ（例:`src/_includes/`）からの相対パスとして解決されます。
@@ -106,9 +112,9 @@ p This is content
 	== content()
 ```
 
-## Slm-neoのAPIオプション
+## slm-neoのAPIオプション
 
-Slm-neoエンジンの`renderAsync`メソッドに渡されるオプションオブジェクトです。
+slm-neoの`renderAsync`メソッドに渡されるオプションオブジェクトです。
 オプションの詳細は[slm-neo](https://github.com/colus-img/slm-neo/)を参照してください。
 
 - 型: `Object`
@@ -121,7 +127,7 @@ import slmPlugin from "eleventy-plugin-slm-neo";
 export default function(eleventyConfig) {
 
 	eleventyConfig.addPlugin(slmPlugin, {
-		// Slm-neoのオプション
+		// slm-neoのオプション
 		someOption: true,
 		// ... その他のslm-neoオプション
 	});

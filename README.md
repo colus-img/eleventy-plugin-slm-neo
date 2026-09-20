@@ -1,19 +1,25 @@
 # eleventy-plugin-slm-neo
 
-An [Eleventy](https://github.com/11ty/eleventy) plugin to use [Slm-neo template language](https://github.com/colus-img/slm-neo).
-Slm-neo is a JS port of the Ruby [Slim](http://slim-lang.com/) for HTML.
+An [Eleventy](https://github.com/11ty/eleventy) plugin to use [slm-neo template language](https://github.com/colus-img/slm-neo).
+slm-neo is a JS port of the Ruby [Slim](http://slim-lang.com/) for HTML.
 
 ## Features
 
-- **Slm Syntax**: Write templates in Slm, a concise syntax similar to Slim.
-- **Async Support**: Slm-neo natively supports async filters, shortcodes and paired shortcodes.
+- **slm Syntax**: Write templates in slm, a concise syntax similar to Slim.
+- **Async Support**: slm-neo natively supports async filters, shortcodes and paired shortcodes.
 
 ## Installation
 
 Install it directly from GitHub:
 
+npm:
 ```bash
 npm i -D colus-img/eleventy-plugin-slm-neo
+```
+
+pnpm:
+```bash:pnpm
+pnpm add -D github:colus-img/eleventy-plugin-slm-neo
 ```
 
 ## Usage
@@ -60,7 +66,7 @@ a href="${url('/my-page')}"
 
 ## Paired Shortcodes
 
-Eleventy's Paired Shortcodes can be called natively using Slm's block syntax. The plugin automatically evaluates the indented block and injects its rendered HTML as the first argument (`content`) to your Paired Shortcode.
+Eleventy's Paired Shortcodes can be called natively using slm-neo's block syntax. The plugin automatically evaluates the indented block and injects its rendered HTML as the first argument (`content`) to your Paired Shortcode.
 **Note**: Use the unescaped output `==` to render the returned HTML properly.
 
 ```slim
@@ -83,7 +89,7 @@ Use Eleventy's standard layout feature. Specify the layout file in the front mat
 In layout file, the content of the original page can be accessed via `content()`.
 
 ### Partials
-Use Slm's `partial` function to include other files.
+Use slm-neo's `partial` function to include other files.
 - **Relative Path**: Resolves relative to the current file's directory.
 - **Root-Relative Path** (starting with `/`): Resolves relative to your Eleventy Includes directory (e.g., `src/_includes/`).
 
@@ -113,7 +119,7 @@ p This is content
 
 ## Slm-neo API Options
 
-Options passed directly to the Slm-neo engine's `renderAsync` method.
+Options passed directly to the Slm-neo's `renderAsync` method.
 About Slm-neo API Options, see [slm-neo](https://github.com/colus-img/slm-neo/) for details.
 
 - Type: `Object`
